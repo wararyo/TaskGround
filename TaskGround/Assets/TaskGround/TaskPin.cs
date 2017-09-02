@@ -41,10 +41,10 @@ namespace wararyo.TaskGround
 
         public static void Instantiate(Task task, Transform player, float size, float scaleFactor, float minSize)
         {
+#if UNITY_EDITOR
             const string PrefabGUID = "a0a7bc9fda6e3194ea8fa6d188e3f802";
-
-
-
+            
+#endif
         }
     }
 
