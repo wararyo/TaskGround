@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace wararyo.TaskGround
 {
@@ -11,6 +14,9 @@ namespace wararyo.TaskGround
         public float size = 1;
         public float scaleFactor = 0.1f;
         public float minSize = 0.2f;
+
+        private TextMesh titleText;
+        private Task task;
 
         // Use this for initialization
         void Start()
@@ -31,6 +37,14 @@ namespace wararyo.TaskGround
             float distance = Vector3.Distance(player.position, transform.position);
             float scale = Mathf.Max(minSize,size + (scaleFactor * distance));
             transform.localScale = new Vector3(scale, scale, scale);
+        }
+
+        public static void Instantiate(Task task, Transform player, float size, float scaleFactor, float minSize)
+        {
+            const string PrefabGUID = "a0a7bc9fda6e3194ea8fa6d188e3f802";
+
+
+
         }
     }
 
