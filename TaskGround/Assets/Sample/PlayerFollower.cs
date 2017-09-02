@@ -2,7 +2,6 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-[ExecuteInEditMode]
 public class PlayerFollower : MonoBehaviour
 {
     public GameObject lookAt;
@@ -34,20 +33,17 @@ public class PlayerFollower : MonoBehaviour
         }
         set
         {
-            if (!Application.isEditor || Application.isPlaying)
+            if (value)
             {
-                Cursor.visible = !value;
-                if (value)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    SceneManager.UnloadScene("UIExample");
-                }
-                else
-                {
-                    Cursor.lockState = CursorLockMode.None;
-                    SceneManager.LoadSceneAsync("UIExample", LoadSceneMode.Additive);
-                }
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            Cursor.visible = !value;
         }
     }
 
@@ -59,6 +55,7 @@ public class PlayerFollower : MonoBehaviour
 
     void Start()
     {
+        cursorIsLocked = true;
         y = defaultY;
         angle = defaultAngle;
         distance = defaultDistance;
@@ -66,9 +63,7 @@ public class PlayerFollower : MonoBehaviour
 
     void Awake()
     {
-		if (!Application.isEditor || Application.isPlaying)
-			cursorIsLocked = true;
-		else cursorIsLocked = false;
+		
     }
 
     // 全ての処理が終わったとにカメラの位置を調整するためにLateUpdateにする
