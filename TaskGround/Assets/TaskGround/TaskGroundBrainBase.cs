@@ -19,6 +19,7 @@ namespace wararyo.TaskGround
 		public float scaleFactor;
 		public float minSize;
 
+		[SerializeField, HideInInspector]
 		private DateTime lastSynced;
 
         // Use this for initialization
@@ -67,10 +68,6 @@ namespace wararyo.TaskGround
             if (response == null) return false;//受信失敗
 			Transform pins = transform.Find("Pins");
 			//一旦全部消す
-			/*foreach ( Transform n in pins )
-			{
-				GameObject.DestroyImmediate(n.gameObject);
-			}*/
 			for( int i = pins.childCount - 1; i >= 0; --i ){
 				GameObject.DestroyImmediate( pins.GetChild( i ).gameObject );
 			}
