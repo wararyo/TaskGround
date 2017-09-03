@@ -169,6 +169,7 @@ MonoBehaviour:
   size: 1
   scaleFactor: 0.1
   minSize: 0.2
+  titleText: {fileID: 102756961346157516}
 --- !u!212 &212746517920292956
 SpriteRenderer:
   m_ObjectHideFlags: 1

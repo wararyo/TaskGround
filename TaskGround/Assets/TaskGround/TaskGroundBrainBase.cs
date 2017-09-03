@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,6 +14,13 @@ namespace wararyo.TaskGround
         [SerializeField, HideInInspector]
         List<Change> changes;//変更のキュー
 
+		public Transform player;
+		public float size;
+		public float scaleFactor;
+		public float minSize;
+
+		private DateTime lastSynced;
+
         // Use this for initialization
         public void Start()
         {
@@ -25,6 +33,11 @@ namespace wararyo.TaskGround
         {
 
         }
+
+		public DateTime getLastSynced()
+		{
+			return lastSynced;
+		}
 
         public void DeleteTask(string ID)
         {
@@ -52,10 +65,23 @@ namespace wararyo.TaskGround
             //受信
             List<Task> response = Pull();
             if (response == null) return false;//受信失敗
+			Transform pins = transform.Find("Pins");
+			//一旦全部消す
+			/*foreach ( Transform n in pins )
+			{
+				GameObject.DestroyImmediate(n.gameObject);
+			}*/
+			for( int i = pins.childCount - 1; i >= 0; --i ){
+				GameObject.DestroyImmediate( pins.GetChild( i ).gameObject );
+			}
+			//それから追加していく
             foreach(Task t in response)
             {
-                //Instantiate();
+				TaskPin.Instantiate(pins,t,player,size,scaleFactor,minSize);
             }
+
+			lastSynced = DateTime.Now;
+
             return true;
         }
 
