@@ -20,6 +20,7 @@ namespace wararyo.TaskGround
 			this.description = description;
 			this.url = url;
 		}
+			
     }
 
 }

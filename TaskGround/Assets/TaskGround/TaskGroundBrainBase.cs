@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using System;
 #if UNITY_EDITOR
@@ -58,17 +59,24 @@ namespace wararyo.TaskGround
 
         }
 
-        public bool Sync()
+		public void StartSync(){
+			StartCoroutine (SyncWork ());
+		}
+
+		public IEnumerator SyncWork()
         {
+			yield return StartCoroutine (OnSyncStarted ());
             //送信
             foreach(Change c in changes)
             {
-                Push(c);
+				yield return StartCoroutine(Push(c));
             }
 
             //受信
-            List<Task> response = Pull();
-            if (response == null) return false;//受信失敗
+			List<Task> response = new List<Task>();
+			yield return StartCoroutine(Pull(r => response = r));
+
+			if (response == null) yield break;//受信失敗
 			Transform pins = transform.Find("Pins");
 			//一旦全部消す
 			for( int i = pins.childCount - 1; i >= 0; --i ){
@@ -81,13 +89,13 @@ namespace wararyo.TaskGround
             }
 
 			lastSynced = DateTime.Now.ToString ();
-
-            return true;
         }
 
-        protected abstract void Push(Change c);
+		protected abstract IEnumerator OnSyncStarted ();
 
-        protected abstract List<Task> Pull();
+		protected abstract IEnumerator Push(Change c);
+
+		protected abstract IEnumerator Pull(Action<List<Task>> callback);
 
 
     }

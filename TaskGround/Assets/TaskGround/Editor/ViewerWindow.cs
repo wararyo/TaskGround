@@ -41,13 +41,9 @@ namespace wararyo.TaskGround {
 			set{
 				m_trelloBoardIndex = value;
 				trelloBoardId = trelloBoardIDs[value];
-				EditorUserSettings.SetConfigValue (KEY_BOARD, trelloBoardId);
+				EditorUserSettings.SetConfigValue (Trello.KEY_BOARD, trelloBoardId);
 			}
 		}
-
-		const string KEY_USERNAME = "TaskGround.TrelloUserName";
-		const string KEY_TOKEN = "TaskGround.TrelloToken";
-		const string KEY_BOARD = "TaskGround.TrelloBoard";
 
 		private string tokenField_text = "";
 
@@ -75,9 +71,9 @@ namespace wararyo.TaskGround {
 			trelloBoardNames = new List<string>();
 
 			//Trello
-			trelloUsername = EditorUserSettings.GetConfigValue(KEY_USERNAME);
-			trelloToken = EditorUserSettings.GetConfigValue (KEY_TOKEN);
-			trelloBoardId = EditorUserSettings.GetConfigValue (KEY_BOARD);
+			trelloUsername = EditorUserSettings.GetConfigValue(Trello.KEY_USERNAME);
+			trelloToken = EditorUserSettings.GetConfigValue (Trello.KEY_TOKEN);
+			trelloBoardId = EditorUserSettings.GetConfigValue (Trello.KEY_BOARD);
 		}
 
 		void OnGUI()
@@ -147,7 +143,7 @@ namespace wararyo.TaskGround {
 				Debug.Log (www.error);
 				trelloIsAuthorizing = false;
 			} else {
-				Debug.Log (www.text);
+				//Debug.Log (www.text);
 				TrelloUser tu = JsonUtility.FromJson<TrelloUser> (www.text);
 				trelloUsername = tu.fullName;
 				trelloToken = token;
@@ -165,6 +161,8 @@ namespace wararyo.TaskGround {
 				Debug.Log (www.error);
 			} else if(!string.IsNullOrEmpty(www.text)) {
 				IList json = (IList) MiniJSON.Json.Deserialize (www.text);
+				trelloBoardIDs.Clear ();
+				trelloBoardNames.Clear ();
 				foreach (IDictionary b in json) {
 					trelloBoardIDs.Add ((string)b ["id"]);
 					trelloBoardNames.Add ((string)b ["name"]);
@@ -174,9 +172,9 @@ namespace wararyo.TaskGround {
 		}
 
 		void SetUserSettings(){
-			EditorUserSettings.SetConfigValue (KEY_TOKEN, trelloToken);
-			EditorUserSettings.SetConfigValue (KEY_USERNAME, trelloUsername);
-			EditorUserSettings.SetConfigValue (KEY_BOARD, trelloBoardId);
+			EditorUserSettings.SetConfigValue (Trello.KEY_TOKEN, trelloToken);
+			EditorUserSettings.SetConfigValue (Trello.KEY_USERNAME, trelloUsername);
+			EditorUserSettings.SetConfigValue (Trello.KEY_BOARD, trelloBoardId);
 		}
 	}
 

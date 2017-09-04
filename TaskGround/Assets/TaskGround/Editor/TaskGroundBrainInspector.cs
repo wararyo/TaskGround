@@ -14,7 +14,7 @@ namespace wararyo.TaskGround
 		{
 			TaskGroundBrainBase t = (TaskGroundBrainBase)target;
 			if (GUILayout.Button ("Sync", null)) {
-				t.Sync ();
+				t.StartSync ();
 			}
 			DateTime lastSynced = t.getLastSynced ();
 			EditorGUILayout.HelpBox (lastSynced == DateTime.MinValue ? "Not synced yet." : "Last Synced: " + lastSynced.ToString() , MessageType.Info);
