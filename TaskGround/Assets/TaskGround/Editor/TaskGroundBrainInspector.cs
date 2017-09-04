@@ -16,7 +16,8 @@ namespace wararyo.TaskGround
 			if (GUILayout.Button ("Sync", null)) {
 				t.Sync ();
 			}
-			EditorGUILayout.HelpBox ("Last Synced: " + t.getLastSynced().ToString() , MessageType.Info);
+			DateTime lastSynced = t.getLastSynced ();
+			EditorGUILayout.HelpBox (lastSynced == DateTime.MinValue ? "Not synced yet." : "Last Synced: " + lastSynced.ToString() , MessageType.Info);
 			EditorGUILayout.Space ();
 			base.OnInspectorGUI ();
 		}

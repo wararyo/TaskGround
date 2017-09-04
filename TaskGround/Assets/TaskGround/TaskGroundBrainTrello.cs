@@ -34,8 +34,4 @@ namespace wararyo.TaskGround
         }
     }
 
-	public class TrelloCard{
-
-	}
-
 }

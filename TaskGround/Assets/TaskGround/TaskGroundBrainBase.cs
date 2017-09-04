@@ -20,7 +20,7 @@ namespace wararyo.TaskGround
 		public float minSize;
 
 		[SerializeField, HideInInspector]
-		private DateTime lastSynced;
+		private string lastSynced;
 
         // Use this for initialization
         public void Start()
@@ -37,7 +37,10 @@ namespace wararyo.TaskGround
 
 		public DateTime getLastSynced()
 		{
-			return lastSynced;
+			try { return DateTime.Parse(lastSynced);}
+			catch {
+				return DateTime.MinValue;
+			}
 		}
 
         public void DeleteTask(string ID)
@@ -77,7 +80,7 @@ namespace wararyo.TaskGround
 				TaskPin.Instantiate(pins,t,player,size,scaleFactor,minSize);
             }
 
-			lastSynced = DateTime.Now;
+			lastSynced = DateTime.Now.ToString ();
 
             return true;
         }

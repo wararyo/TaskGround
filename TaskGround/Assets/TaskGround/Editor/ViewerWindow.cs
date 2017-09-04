@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Networking;
+using MiniJSON;
 
 namespace wararyo.TaskGround {
 
@@ -25,12 +26,28 @@ namespace wararyo.TaskGround {
 
 		private string trelloUsername = "";
 		private string trelloToken = "";
+		private string trelloBoardId = "";
 
-		private const string APIKEY = "2794682bb58abe778a8b2db5e1c6647d";//もっとスマートな保管方法ないですかね
-		private const string APIURL = "https://api.trello.com/1/authorize?key={0}&name=TaskGround&expiration=never&response_type=token&scope=read,write";
+		private const string APIURL_USERNAME = "https://api.trello.com/1/authorize?key={0}&name=TaskGround&expiration=never&response_type=token&scope=read,write";
+		private const string APIURL_BOARDS = "https://api.trello.com/1/members/me/boards?key={0}&token={1}&fields=name";
+
+		private List<string> trelloBoardNames;
+		private List<string> trelloBoardIDs;
+		private int m_trelloBoardIndex;
+		private int trelloBoardIndex{
+			get{
+				return m_trelloBoardIndex;
+			}
+			set{
+				m_trelloBoardIndex = value;
+				trelloBoardId = trelloBoardIDs[value];
+				EditorUserSettings.SetConfigValue (KEY_BOARD, trelloBoardId);
+			}
+		}
 
 		const string KEY_USERNAME = "TaskGround.TrelloUserName";
 		const string KEY_TOKEN = "TaskGround.TrelloToken";
+		const string KEY_BOARD = "TaskGround.TrelloBoard";
 
 		private string tokenField_text = "";
 
@@ -54,7 +71,13 @@ namespace wararyo.TaskGround {
 
 		void OnEnable()
 		{
+			trelloBoardIDs = new List<string>();
+			trelloBoardNames = new List<string>();
 
+			//Trello
+			trelloUsername = EditorUserSettings.GetConfigValue(KEY_USERNAME);
+			trelloToken = EditorUserSettings.GetConfigValue (KEY_TOKEN);
+			trelloBoardId = EditorUserSettings.GetConfigValue (KEY_BOARD);
 		}
 
 		void OnGUI()
@@ -71,10 +94,6 @@ namespace wararyo.TaskGround {
 
 			} else {//Setting Tab
 
-				//Trello
-				trelloUsername = EditorUserSettings.GetConfigValue(KEY_USERNAME);
-				trelloToken = EditorUserSettings.GetConfigValue (KEY_TOKEN);
-
 				EditorGUILayout.LabelField("Trello Settings", EditorStyles.boldLabel);
 				if (trelloUsername == null || trelloUsername == "") {//Not logged in
 					EditorGUILayout.LabelField("Not logged in");
@@ -90,13 +109,16 @@ namespace wararyo.TaskGround {
 					EditorGUILayout.LabelField("Logged in as " + trelloUsername);
 					if (GUILayout.Button ("Logout"))
 						LogoutTrello ();
+					if (trelloBoardIDs.Count == 0)
+						EditorCoroutine.Start(ReloadTrelloBoards ());
+					else trelloBoardIndex = EditorGUILayout.Popup ("Board" , trelloBoardIndex, trelloBoardNames.ToArray(),null);
 				}
 
 			}
 		}
 
 		void OpenTrelloAuth(){
-			Application.OpenURL (string.Format(APIURL,APIKEY));
+			Application.OpenURL (string.Format(APIURL_USERNAME,Trello.APIKEY));
 			tokenField_text = "";
 			trelloIsAuthorizing = true;
 		}
@@ -114,10 +136,12 @@ namespace wararyo.TaskGround {
 		void LogoutTrello(){
 			trelloToken = "";
 			trelloUsername = "";
+			SetUserSettings ();
+			Repaint ();
 		}
 
 		IEnumerator AuthTrelloCoroutine(string token){
-			WWW www = new WWW(string.Format("https://api.trello.com/1/members/me?key={0}&token={1}&fields=fullName",APIKEY,token));
+			WWW www = new WWW(string.Format("https://api.trello.com/1/members/me?key={0}&token={1}&fields=fullName",Trello.APIKEY,token));
 			yield return www;
 			if (!string.IsNullOrEmpty (www.error)) {
 				Debug.Log (www.error);
@@ -127,17 +151,33 @@ namespace wararyo.TaskGround {
 				TrelloUser tu = JsonUtility.FromJson<TrelloUser> (www.text);
 				trelloUsername = tu.fullName;
 				trelloToken = token;
-				EditorUserSettings.SetConfigValue (KEY_TOKEN, trelloToken);
-				EditorUserSettings.SetConfigValue (KEY_USERNAME, trelloUsername);
+				SetUserSettings ();
 				trelloIsAuthorizing = false;
 			}
+			Repaint ();
 			www.Dispose ();
 		}
-	}
 
-	[System.Serializable]
-	public class TrelloUser {
-		public string fullName;
+		IEnumerator ReloadTrelloBoards(){
+			WWW www = new WWW(string.Format(APIURL_BOARDS,Trello.APIKEY,trelloToken));
+			yield return www;
+			if (!string.IsNullOrEmpty (www.error)) {
+				Debug.Log (www.error);
+			} else if(!string.IsNullOrEmpty(www.text)) {
+				IList json = (IList) MiniJSON.Json.Deserialize (www.text);
+				foreach (IDictionary b in json) {
+					trelloBoardIDs.Add ((string)b ["id"]);
+					trelloBoardNames.Add ((string)b ["name"]);
+				}
+				trelloBoardIndex = trelloBoardIDs.IndexOf (trelloBoardId);
+			}
+		}
+
+		void SetUserSettings(){
+			EditorUserSettings.SetConfigValue (KEY_TOKEN, trelloToken);
+			EditorUserSettings.SetConfigValue (KEY_USERNAME, trelloUsername);
+			EditorUserSettings.SetConfigValue (KEY_BOARD, trelloBoardId);
+		}
 	}
 
 }
