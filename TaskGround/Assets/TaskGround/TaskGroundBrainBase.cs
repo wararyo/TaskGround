@@ -38,16 +38,19 @@ namespace wararyo.TaskGround
         // Update is called once per frame
         public void Update()
         {
-			float minDist = float.MaxValue;
-			Task selectingTask = null;
-			foreach (TaskPin tp in GetComponentsInChildren<TaskPin>()) {
-				float dist = Vector3.Distance (tp.task.position, player.position);
-				if (dist < showingDescriptionDistance && dist < minDist) {
-					minDist = dist;
-					selectingTask = tp.task;
+			//Playingの時以外はViewerWindow#OnSelectionChangeにて
+			if (EditorApplication.isPlaying) {
+				float minDist = float.MaxValue;
+				Task selectingTask = null;
+				foreach (TaskPin tp in GetComponentsInChildren<TaskPin>()) {
+					float dist = Vector3.Distance (tp.task.position, player.position);
+					if (dist < showingDescriptionDistance && dist < minDist) {
+						minDist = dist;
+						selectingTask = tp.task;
+					}
 				}
+				TaskGround.SelectingTask = selectingTask;
 			}
-			TaskGround.SelectingTask = selectingTask;
         }
 
 		public DateTime getLastSynced()

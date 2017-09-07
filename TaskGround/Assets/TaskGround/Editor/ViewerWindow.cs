@@ -58,6 +58,28 @@ namespace wararyo.TaskGround {
 				Repaint ();
 		}
 
+		//TaskPinかその子供を選んでいたら、その詳細を表示する(一旦TaskGroundクラスを経由してまたViewerWindowに帰ってくる)
+		//Playingの時にはTaskGroundBrain#Updateにて
+		void OnSelectionChange(){
+			if (EditorApplication.isPlaying)
+				return;
+			if (Selection.activeGameObject == null) {
+				TaskGround.SelectingTask = null;
+				return;
+			}
+			
+			TaskPin tp = Selection.activeGameObject.GetComponent<TaskPin> ();
+			if (tp != null) {
+				TaskGround.SelectingTask = tp.task;
+			} else {
+				tp = Selection.activeGameObject.GetComponentInParent<TaskPin> ();
+				if (tp != null)
+					TaskGround.SelectingTask = tp.task;
+				else
+					TaskGround.SelectingTask = null;
+			}
+		}
+
 		void OnEnable()
 		{
 			trelloBoardIDs = new List<string>();
