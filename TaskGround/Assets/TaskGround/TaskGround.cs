@@ -6,7 +6,7 @@ namespace wararyo.TaskGround {
 
 public static class TaskGround {
 
-		private static Task m_selectingTask;
+		private static Task m_selectingTask = null;
 		public static Task SelectingTask{
 			get{
 				return m_selectingTask;

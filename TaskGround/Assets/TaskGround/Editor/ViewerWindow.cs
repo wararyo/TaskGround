@@ -91,6 +91,8 @@ namespace wararyo.TaskGround {
 			trelloBoardId = EditorUserSettings.GetConfigValue (Trello.KEY_BOARD);
 
 			TaskGround.OnSelectingTaskChanged += OnTaskChanged ;
+
+			OnTaskChanged ();
 		}
 
 		void OnGUI()
@@ -98,13 +100,25 @@ namespace wararyo.TaskGround {
 			tab = GUILayout.Toolbar(tab, new string[] { "Information", "Settings" }, EditorStyles.toolbarButton, null);
 
 			if (tab == 0) {//Information Tab
-				
+
+				if (GUILayout.Button ("Add Task There")) {
+
+				}
+
+				EditorGUILayout.Space ();
+
 				if (currentTask == null) {
 					EditorGUILayout.LabelField ("There is no task to show.");
 				} else {
-					EditorGUILayout.LabelField(currentTask.title, EditorStyles.boldLabel);
+					EditorGUILayout.TextArea(currentTask.title, EditorStyles.largeLabel);
 					EditorGUILayout.Space ();
-					EditorGUILayout.TextArea (currentTask.description, EditorStyles.whiteLargeLabel);
+					EditorGUILayout.TextArea (currentTask.description);
+					using (new EditorGUILayout.HorizontalScope()) {
+						if (GUILayout.Button ("Apply"))
+							;
+						if (GUILayout.Button ("Delete"))
+							;
+					}
 				}
 
 			} else {//Setting Tab
