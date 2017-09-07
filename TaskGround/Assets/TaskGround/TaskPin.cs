@@ -16,6 +16,7 @@ namespace wararyo.TaskGround
         public float minSize = 0.2f;
 
         public TextMesh titleText;
+		[SerializeField, HideInInspector]
         private Task m_task;
 		public Task task{
 			get{

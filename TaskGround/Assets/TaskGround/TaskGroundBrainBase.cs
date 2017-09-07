@@ -16,9 +16,14 @@ namespace wararyo.TaskGround
         List<Change> changes;//変更のキュー
 
 		public Transform player;
-		public float size;
-		public float scaleFactor;
-		public float minSize;
+		[Range(0.2f,2f)]
+		public float size = 1;
+		[Range(-0.2f,0.2f)]
+		public float scaleFactor = 0.1f;
+		[Range(0,2)]
+		public float minSize = 0.2f;
+		[Range(1,4)]
+		public float showingDescriptionDistance = 2;
 
 		[SerializeField, HideInInspector]
 		private string lastSynced;
@@ -33,7 +38,16 @@ namespace wararyo.TaskGround
         // Update is called once per frame
         public void Update()
         {
-
+			float minDist = float.MaxValue;
+			Task selectingTask = null;
+			foreach (TaskPin tp in GetComponentsInChildren<TaskPin>()) {
+				float dist = Vector3.Distance (tp.task.position, player.position);
+				if (dist < showingDescriptionDistance && dist < minDist) {
+					minDist = dist;
+					selectingTask = tp.task;
+				}
+			}
+			TaskGround.SelectingTask = selectingTask;
         }
 
 		public DateTime getLastSynced()

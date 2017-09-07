@@ -9,16 +9,7 @@ namespace wararyo.TaskGround {
 
 	public class ViewerWindow : EditorWindow {
 
-		private Task m_currentTask;
-		Task currentTask {
-			get {
-				return m_currentTask;
-			}
-			set {
-				m_currentTask = value;
-				OnTaskChanged ();
-			}
-		}
+		private Task currentTask;
 
 		private bool trelloIsAuthorizing = false;
 
@@ -62,7 +53,9 @@ namespace wararyo.TaskGround {
 
 		void OnTaskChanged()
 		{
-
+			currentTask = TaskGround.SelectingTask;
+			if (tab == 0)
+				Repaint ();
 		}
 
 		void OnEnable()
@@ -74,6 +67,8 @@ namespace wararyo.TaskGround {
 			trelloUsername = EditorUserSettings.GetConfigValue(Trello.KEY_USERNAME);
 			trelloToken = EditorUserSettings.GetConfigValue (Trello.KEY_TOKEN);
 			trelloBoardId = EditorUserSettings.GetConfigValue (Trello.KEY_BOARD);
+
+			TaskGround.OnSelectingTaskChanged += OnTaskChanged ;
 		}
 
 		void OnGUI()
@@ -85,7 +80,9 @@ namespace wararyo.TaskGround {
 				if (currentTask == null) {
 					EditorGUILayout.LabelField ("There is no task to show.");
 				} else {
-
+					EditorGUILayout.LabelField(currentTask.title, EditorStyles.boldLabel);
+					EditorGUILayout.Space ();
+					EditorGUILayout.TextArea (currentTask.description, EditorStyles.whiteLargeLabel);
 				}
 
 			} else {//Setting Tab

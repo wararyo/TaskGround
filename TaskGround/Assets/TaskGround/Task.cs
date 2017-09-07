@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace wararyo.TaskGround
 {
-
+	[System.Serializable]
     public class Task
     {
         public string ID;
