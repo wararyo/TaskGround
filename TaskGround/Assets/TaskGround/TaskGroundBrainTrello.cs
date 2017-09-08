@@ -9,7 +9,7 @@ using UnityEditor;
 
 namespace wararyo.TaskGround
 {
-
+	[ExecuteInEditMode]
     public class TaskGroundBrainTrello : TaskGroundBrainBase
     {
 

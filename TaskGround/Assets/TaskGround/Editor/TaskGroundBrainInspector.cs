@@ -17,7 +17,11 @@ namespace wararyo.TaskGround
 				t.StartSync ();
 			}
 			DateTime lastSynced = t.getLastSynced ();
-			EditorGUILayout.HelpBox (lastSynced == DateTime.MinValue ? "Not synced yet." : "Last Synced: " + lastSynced.ToString() , MessageType.Info);
+			EditorGUILayout.HelpBox (lastSynced == DateTime.MinValue ? "Not synced yet." : 
+				"Last Synced: " + lastSynced.ToString() + 
+				(t.changes.Count == 0 ? "" : "\n" + t.changes.Count + " changes in queue.") , MessageType.Info);
+			if (GUILayout.Button ("Discard Changes"))
+				t.DiscardChanges ();
 			EditorGUILayout.Space ();
 			base.OnInspectorGUI ();
 		}

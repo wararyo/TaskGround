@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace wararyo.TaskGround
 {
-
+	[SelectionBase]
     public class TaskPin : MonoBehaviour
     {
         public Transform player;

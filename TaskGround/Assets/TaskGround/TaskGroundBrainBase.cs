@@ -8,12 +8,12 @@ using UnityEditor;
 
 namespace wararyo.TaskGround
 {
-    [ExecuteInEditMode]
+	[ExecuteInEditMode]
     public abstract class TaskGroundBrainBase : MonoBehaviour
     {
 
-        [SerializeField, HideInInspector]
-        List<Change> changes;//変更のキュー
+		[HideInInspector,PersistentAmongPlayMode]
+        public List<Change> changes;//変更のキュー
 
 		public Transform player;
 		[Range(0.2f,2f)]
@@ -32,8 +32,12 @@ namespace wararyo.TaskGround
         public void Start()
         {
             if (!Application.isEditor) Destroy(gameObject); //エディターじゃなかったら自殺
-            changes = new List<Change>();
+			if(changes == null) changes = new List<Change>();
         }
+
+		void OnEnable(){
+			TaskGround.OnChange = AddChange;
+		}
 
         // Update is called once per frame
         public void Update()
@@ -75,6 +79,14 @@ namespace wararyo.TaskGround
         {
 
         }
+
+		public void AddChange(Change c){
+			changes.Add (c);
+		}
+		 
+		public void DiscardChanges(){
+			changes.Clear ();
+		}
 
 		public void StartSync(){
 			StartCoroutine (SyncWork ());

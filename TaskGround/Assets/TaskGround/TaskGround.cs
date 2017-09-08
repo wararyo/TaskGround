@@ -19,7 +19,12 @@ public static class TaskGround {
 			}
 		}
 
+		public static void AddChange(Change c){
+			OnChange (c);
+		}
+
 		public static System.Action OnSelectingTaskChanged;
+		public static System.Action<Change> OnChange = delegate {};
 
 }
 

@@ -36,6 +36,11 @@ namespace wararyo.TaskGround {
 			}
 		}
 
+		private string title;
+		private string description;
+
+		private bool currentTaskHasChange = false;
+
 		private string tokenField_text = "";
 
 		[MenuItem("Window/TaskGround")]
@@ -54,6 +59,11 @@ namespace wararyo.TaskGround {
 		void OnTaskChanged()
 		{
 			currentTask = TaskGround.SelectingTask;
+			//currentTaskHasChange = false;
+			if (currentTask != null) {
+				title = currentTask.title;
+				description = currentTask.description;
+			}
 			if (tab == 0)
 				Repaint ();
 		}
@@ -110,14 +120,33 @@ namespace wararyo.TaskGround {
 				if (currentTask == null) {
 					EditorGUILayout.LabelField ("There is no task to show.");
 				} else {
-					EditorGUILayout.TextArea(currentTask.title, EditorStyles.largeLabel);
+					title = EditorGUILayout.TextArea(title, EditorStyles.largeLabel);
 					EditorGUILayout.Space ();
-					EditorGUILayout.TextArea (currentTask.description);
+					description = EditorGUILayout.TextArea (description);
+
+					// 変更があったらApplyボタンを有効にする
+					//TODO: 位置が変わってもApplyボタンを有効にする
+					currentTaskHasChange = (title != currentTask.title ||
+						description != currentTask.description);
+					
 					using (new EditorGUILayout.HorizontalScope()) {
-						if (GUILayout.Button ("Apply"))
-							;
-						if (GUILayout.Button ("Delete"))
-							;
+						using(new EditorGUI.DisabledGroupScope(!currentTaskHasChange)){
+							if (GUILayout.Button ("Apply")) {
+								TaskGround.AddChange (new Change(currentTask.ID,ChangeType.Modify,
+									currentTask.position,
+									title != currentTask.title ? title: "",
+									description != currentTask.description ? description : ""));
+								currentTask.title = title;
+								currentTask.description = description;
+								//TaskGround.OnChange (new Ch
+								//currentTaskHasChange = false;
+							}
+						}
+						if (GUILayout.Button ("Delete")) {
+							Change c = new Change ("", ChangeType.Delete, new Vector3(0,0,0), "", "");
+							TaskGround.AddChange (c);
+							TaskGround.SelectingTask = null;
+						}
 					}
 				}
 
