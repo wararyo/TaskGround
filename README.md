@@ -37,3 +37,11 @@ TaskGround uses only ONE Trello board in all Unity scenes of certain Unity proje
 5. Press "Sync" again.
 
 ## How to use
+
+## References
+
+PersistentAmongPlayMode_Unity
+https://github.com/tsubaki/SerializedParameter_Unity
+
+MiniJSON
+
