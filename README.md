@@ -1,6 +1,8 @@
 # TaskGround
 An Unity asset which puts tasks on scenes
 
+![TaskGround](Images/Eyecatch.jpg)
+
 ## Overview
 * Put task baloons on your Unity scenes
 * Tasks can sync with external task management services (currently supports only Trello)
