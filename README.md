@@ -44,4 +44,7 @@ PersistentAmongPlayMode_Unity
 https://github.com/tsubaki/SerializedParameter_Unity
 
 MiniJSON
+https://gist.github.com/darktable/1411710
 
+EditorCoroutine
+http://qiita.com/k_yanase/items/686fc3134c363ffc5239
